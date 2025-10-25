@@ -108,10 +108,10 @@ def test_01():
     ]
 
     assert df.barrio.value_counts().to_list() == [
-        990,
-        483,
-        423,
-        383,
+        990,#+2
+        483,#check
+        423,#check
+        383,#+1
         376,
         372,
         361,
