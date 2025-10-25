@@ -23,22 +23,23 @@ def pregunta_01():
 
 
     df_clean = df.copy()
-    df_clean = df_clean.apply(lambda x: x.str.lower().str.strip() if(x.dtype=='object') else x)
+    #df_clean = df_clean.apply(lambda x: x.str.lower().str.strip() if(x.dtype=='object') else x)
     df_clean.sexo = df_clean.sexo.astype('category')
+    df_clean.sexo = df_clean.sexo.str.lower()
     df_clean["fecha_de_beneficio"] = pd.to_datetime(df["fecha_de_beneficio"], format="%d/%m/%Y", errors="coerce").combine_first(pd.to_datetime(df_clean["fecha_de_beneficio"], format="%Y/%m/%d", errors="coerce"))
-    df_clean.monto_del_credito = df_clean.monto_del_credito.str.replace("$","").str.replace(",","").str.replace(".00","")
-    df_clean.monto_del_credito = df_clean.monto_del_credito.astype(float)
-    df_clean = df_clean.apply(lambda x: x.str.replace("_"," ") if(x.dtype=='object') else x)
-    df_clean = df_clean.apply(lambda x: x.str.replace("-"," ") if(x.dtype=='object') else x)
-    df_clean.barrio = df_clean.barrio.str.strip()
-    df_clean.idea_negocio = df_clean.idea_negocio.str.strip()
-    df_clean.línea_credito = df_clean.línea_credito.str.strip()
+    df_clean.monto_del_credito = df_clean.monto_del_credito.str.strip().str.replace("$","").str.replace(",","").str.replace(".00","")
+    df_clean.monto_del_credito = df_clean.monto_del_credito.astype(int)
+    #df_clean = df_clean.apply(lambda x: x.str.replace("_"," ") if(x.dtype=='object') else x)
+    #df_clean = df_clean.apply(lambda x: x.str.replace("-"," ") if(x.dtype=='object') else x)
+    df_clean.barrio = df_clean.barrio.str.lower().str.replace("_"," ").str.replace("-"," ")
+    df_clean.idea_negocio = df_clean.idea_negocio.str.lower().str.replace("_"," ").str.replace("-"," ").str.strip()
+    df_clean.línea_credito = df_clean.línea_credito.str.lower().str.replace("_"," ").str.replace("-"," ").str.strip()
+    df_clean.tipo_de_emprendimiento = df_clean.tipo_de_emprendimiento.str.lower().str.replace("_"," ").str.replace("-"," ").str.strip()
     df_clean = df_clean.drop_duplicates()
     df_clean = df_clean.dropna()
-    df_clean.rename(columns={'sexo':'sexo'}, inplace=True)
 
     os.makedirs('files/output/',exist_ok=True)
-    df_clean.to_csv(r'files/output/solicitudes_de_credito.csv',index=True)
+    df_clean.to_csv(r'files/output/solicitudes_de_credito.csv', sep=';',index=True)
     return df_clean
 
 
